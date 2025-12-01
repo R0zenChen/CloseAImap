@@ -1,21 +1,26 @@
 
-// 添加基础地图图层
+// 创建基础地图图层
 var osmLayer = new ol.layer.Tile({
     source: new ol.source.OSM(),
     title: 'OpenStreetMap'
 });
 
-// 将基础图层添加到图层列表最前面
-var mapLayers = [osmLayer].concat(layersList);
-
+// 创建地图实例
 var map = new ol.Map({
     target: 'map',
     renderer: 'canvas',
-    layers: mapLayers,
+    layers: [osmLayer], // 先添加基础图层
     view: new ol.View({
          maxZoom: 28, minZoom: 1
     })
 });
+
+// 再添加数据图层
+if (layersList && Array.isArray(layersList)) {
+    layersList.forEach(function(layer) {
+        map.addLayer(layer);
+    });
+}
 
 //initial view - epsg:3857 coordinates if not "Match project CRS"
 map.getView().fit([7120085.813866, 81709.576967, 18371750.830112, 7385466.070343], map.getSize());
