@@ -43,7 +43,9 @@ window.onload = function() {
     map.getView().setProperties({constrainResolution: true});
 
     // 设置容器和控件（将后续的控件代码移到这里）
-
+    
+    // 直接调用事件监听器设置函数，因为window.onload确保DOM已准备好
+    setupControlEventListeners();
 
 
 ////small screen definition
@@ -235,7 +237,7 @@ function onPointerMove(evt) {
         var feature = featuresAndLayers[i].feature;
         var layer = featuresAndLayers[i].layer;
         var doPopup = false;
-        for (k in layer.get('fieldImages')) {
+        for (let k in layer.get('fieldImages')) {
             if (layer.get('fieldImages')[k] != "Hidden") {
                 doPopup = true;
             }
@@ -297,7 +299,7 @@ function onPointerMove(evt) {
 						radius = parseFloat(featureStyle.split('radius')[1].split(' ')[1]) + clusterLength;
 					}
 
-                    highlightStyle = new ol.style.Style({
+                    let highlightStyle = new ol.style.Style({
                         image: new ol.style.Circle({
                             fill: new ol.style.Fill({
                                 color: "#ffff00"
@@ -309,7 +311,7 @@ function onPointerMove(evt) {
 
                     var featureWidth = featureStyle.getStroke().getWidth();
 
-                    highlightStyle = new ol.style.Style({
+                    let highlightStyle = new ol.style.Style({
                         stroke: new ol.style.Stroke({
                             color: '#ffff00',
                             lineDash: null,
@@ -318,7 +320,7 @@ function onPointerMove(evt) {
                     });
 
                 } else {
-                    highlightStyle = new ol.style.Style({
+                    let highlightStyle = new ol.style.Style({
                         fill: new ol.style.Fill({
                             color: '#ffff00'
                         })
@@ -402,7 +404,7 @@ function onSingleClickFeatures(evt) {
                     popupText += '<li><table>';
                     popupText += '<a><b>' + layer.get('popuplayertitle') + '</b></a>';
                     popupText += createPopupField(currentFeature, currentFeatureKeys, layer);
-                    popupText += '</table>';
+                    popupText += '</table></li>';
                 }
             }
         }
@@ -555,7 +557,9 @@ if (bottomAttributionUl) {
 var preDoHover = doHover;
 var preDoHighlight = doHighlight;
 var isPopupAllActive = false;
-document.addEventListener('DOMContentLoaded', function() {
+
+// Move this outside window.onload since window.onload ensures DOM is ready
+function setupControlEventListeners() {
 	if (doHover || doHighlight) {
 		var controlElements = document.getElementsByClassName('ol-control');
 		for (var i = 0; i < controlElements.length; i++) {
@@ -570,7 +574,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			});
 		}
 	}
-});
+}
 
 
 //move controls inside containers, in order
@@ -608,7 +612,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (attributionControl) {
         bottomRightContainerDiv.appendChild(attributionControl);
     }
+    
+    // 全局变量声明，确保其他函数可以访问map
+    window.map = map;
 };
-
-// 全局变量声明，确保其他函数可以访问map
-window.map = map;
