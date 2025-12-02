@@ -1,18 +1,50 @@
 
-var map = new ol.Map({
-    target: 'map',
-    renderer: 'canvas',
-    layers: layersList,
-    view: new ol.View({
-         maxZoom: 28, minZoom: 1
-    })
-});
+// 等待所有数据加载完成后再初始化地图
+window.onload = function() {
+    // 创建基础地图图层
+    var osmLayer = new ol.layer.Tile({
+        source: new ol.source.OSM(),
+        title: 'OpenStreetMap'
+    });
 
-//initial view - epsg:3857 coordinates if not "Match project CRS"
-map.getView().fit([7120085.813866, 81709.576967, 18371750.830112, 7385466.070343], map.getSize());
+    // 创建地图实例
+    var map = new ol.Map({
+        target: 'map',
+        renderer: 'canvas',
+        layers: [osmLayer], // 先添加基础图层
+        view: new ol.View({
+             maxZoom: 28, minZoom: 1
+        })
+    });
 
-//full zooms only
-map.getView().setProperties({constrainResolution: true});
+    // 检查layersList是否存在并添加数据图层
+    console.log('Checking layersList:', typeof layersList);
+    if (typeof layersList !== 'undefined' && Array.isArray(layersList)) {
+        console.log('Adding', layersList.length, 'layers to map');
+        layersList.forEach(function(layer, index) {
+            console.log('Adding layer', index, layer.get('title'));
+            map.addLayer(layer);
+        });
+    } else {
+        console.log('layersList is not defined or not an array');
+        // 尝试直接创建图层（备用方案）
+        if (typeof lyr___0 !== 'undefined') {
+            console.log('Adding lyr___0 directly');
+            map.addLayer(lyr___0);
+        }
+        if (typeof lyr___1 !== 'undefined') {
+            console.log('Adding lyr___1 directly');
+            map.addLayer(lyr___1);
+        }
+    }
+
+    // 初始化视图
+    map.getView().fit([7120085.813866, 81709.576967, 18371750.830112, 7385466.070343], map.getSize());
+    map.getView().setProperties({constrainResolution: true});
+
+    // 设置容器和控件（将后续的控件代码移到这里）
+
+
 
 ////small screen definition
     var hasTouchScreen = map.getViewport().classList.contains('ol-touch');
@@ -576,3 +608,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (attributionControl) {
         bottomRightContainerDiv.appendChild(attributionControl);
     }
+};
+
+// 为了兼容性，保留原始的地图变量定义
+var map;
