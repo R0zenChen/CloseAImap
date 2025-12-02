@@ -610,5 +610,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 };
 
-// 为了兼容性，保留原始的地图变量定义
-var map;
+// 全局变量声明，确保其他函数可以访问map
+window.map = map;
